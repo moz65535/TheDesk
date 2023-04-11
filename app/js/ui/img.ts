@@ -3,8 +3,6 @@ import { modalInitGetInstance, toast } from '../common/declareM'
 import lang from '../common/lang'
 import { execCopy } from '../platform/end'
 import { details } from '../tl/datails'
-import { parseRemainXmlHttpRequest } from '../common/apiRemain'
-import { tips } from './tips'
 /*イメージビューワー*/
 //postのimg.jsとは異なります。
 export function imgv(id: string, key: number, acctId?: string) {
@@ -115,7 +113,7 @@ function imageXhr(id: string, key: number, murl: string) {
 		false
 	)
 	xhr.onreadystatechange = function () {
-		if (this.readyState === xhr.DONE && this.status === 200) {
+		if (this.readyState === 4 && this.status === 200) {
 			const r = new FileReader()
 			r.readAsDataURL(this.response)
 			r.onload = function () {
@@ -146,8 +144,6 @@ function imageXhr(id: string, key: number, murl: string) {
 				$('#imgsec').text(proctime)
 				$('#imgmodal').attr('src', src)
 			}
-			parseRemainXmlHttpRequest(murl,this,'get')
-			tips('refresh')
 		}
 	}
 	xhr.responseType = 'blob'

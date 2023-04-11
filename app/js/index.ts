@@ -161,7 +161,6 @@ import { udgEx, udg, historyShow, profShow, profbrws, setMain, hisclose } from '
 
 import { values } from '@syuilo/aiscript'
 import { migrate } from './platform/migrate'
-import { toastApiRemain } from './common/apiRemain'
 globalThis.asCommon = {
 	'TheDesk:console': values.FN_NATIVE((z) => {
 		if(!z) return
@@ -512,4 +511,3 @@ globalThis.client = client
 globalThis.migrate = migrate
 globalThis.pwaImgSelect = pwaImgSelect
 globalThis.closeSupport = closeSupport
-globalThis.toastApiRemain = toastApiRemain

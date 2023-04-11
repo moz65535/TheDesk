@@ -1,7 +1,7 @@
 import { getColumn, setColumn } from '../common/storage'
 import $ from 'jquery'
 import { mixMore, mixre, mixTl } from './mix'
-import { tips, todc, todo } from '../ui/tips'
+import { todc, todo } from '../ui/tips'
 import { IColumnData, IColumnType, IColumnUTL } from '../../interfaces/Storage'
 import api from '../common/fetch'
 import { Conversation, Toot } from '../../interfaces/MastodonApiReturns'
@@ -19,7 +19,6 @@ import { parse } from './parse'
 import { say } from './speech'
 import { goTop, scrollCk, scrollEvent } from '../ui/scroll'
 import { parseColumn } from '../ui/layout'
-import { parseRemainXmlHttpRequest } from '../common/apiRemain'
 
 //TL取得
 globalThis.moreLoading = false
@@ -854,7 +853,7 @@ function getBookmark(acctId: string, tlid: string, more?: boolean) {
 	httpreq.responseType = 'json'
 	httpreq.send()
 	httpreq.onreadystatechange = function () {
-		if (httpreq.readyState === httpreq.DONE) {
+		if (httpreq.readyState === 4) {
 			const json: Toot[] = httpreq.response
 			const maxIds = httpreq.getResponseHeader('link')
 			let maxId = 0
@@ -875,8 +874,6 @@ function getBookmark(acctId: string, tlid: string, more?: boolean) {
 			timeUpdate()
 			globalThis.moreLoading = false
 			todc()
-			parseRemainXmlHttpRequest(start,httpreq,'get')
-			tips('refresh')
 		}
 	}
 }
@@ -901,7 +898,7 @@ function getFav(acctId: string, tlid: string, more?: boolean) {
 	httpreq.responseType = 'json'
 	httpreq.send()
 	httpreq.onreadystatechange = function () {
-		if (httpreq.readyState === httpreq.DONE) {
+		if (httpreq.readyState === 4) {
 			const json: Toot[] = httpreq.response
 			const maxIds = httpreq.getResponseHeader('link')
 			let maxId = 0
@@ -922,8 +919,6 @@ function getFav(acctId: string, tlid: string, more?: boolean) {
 			timeUpdate()
 			globalThis.moreLoading = false
 			todc()
-			parseRemainXmlHttpRequest(start,httpreq,'get')
-			tips('refresh')
 		}
 	}
 }

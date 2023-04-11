@@ -7,12 +7,11 @@ import lang from '../common/lang'
 import { getColumn, getMulti } from '../common/storage'
 import timeUpdate from '../common/time'
 import { escapeHTML, setLog, statusModel } from '../platform/first'
-import { tips, todc, todo } from '../ui/tips'
+import { todc, todo } from '../ui/tips'
 import { getFilterTypeByAcct } from './filter'
 import { parse } from './parse'
 import { getMarker } from './tl'
 import { userParse } from './userParse'
-import { parseRemainXmlHttpRequest } from '../common/apiRemain'
 
 export function notf(acctId: string, tlid: string, sys?: 'direct') {
 	if (sys === 'direct') {
@@ -38,7 +37,7 @@ export async function notfColumn(acctId: string, tlid: string) {
 	httpreq.responseType = 'json'
 	httpreq.send()
 	httpreq.onreadystatechange = function () {
-		if (httpreq.readyState === httpreq.DONE) {
+		if (httpreq.readyState === 4) {
 			const json: Notification[] = httpreq.response
 			if (this.status !== 200) {
 				$('#landing_' + tlid).append(`<div>${this.status}</div><div>${escapeHTML(this.response)}`)
@@ -97,8 +96,6 @@ export async function notfColumn(acctId: string, tlid: string) {
 			//Markers
 			const markers = localStorage.getItem('markers') === 'yes'
 			if (markers) getMarker(tlid, 'notf', acctId)
-			parseRemainXmlHttpRequest(start,httpreq, 'get')
-			tips('refresh')
 		}
 	}
 }
@@ -254,7 +251,7 @@ export function notfMore(tlid: string) {
 		httpreq.responseType = 'json'
 		httpreq.send()
 		httpreq.onreadystatechange = function () {
-			if (httpreq.readyState === httpreq.DONE) {
+			if (httpreq.readyState === 4) {
 				const json: Notification[] = httpreq.response
 				const headerM = httpreq.getResponseHeader('link')?.match(/[?&]{1}max_id=([0-9]+)/)
 				const maxId = headerM && headerM[1]
@@ -290,8 +287,6 @@ export function notfMore(tlid: string) {
 				}
 				$('#notf-box').addClass('fetched')
 				todc()
-				parseRemainXmlHttpRequest(start,httpreq,'get')
-				tips('refresh')
 			}
 		}
 	}
