@@ -15,25 +15,27 @@ import ruRU from '../../view/ru-RU/main'
 import esES from '../../view/es-ES/main'
 import plPL from '../../view/pl-PL/main'
 import siLK from '../../view/si-LK/main'
+import ukUA from '../../view/uk-UA/main'
 import ps from '../../view/ps/main'
 const langs = {
 	ja,
-	jaKS,
+	'ja-KS': jaKS,
 	en,
 	bg,
 	cs,
 	de,
-	esAR,
-	itIT,
-	zhCN,
-	frFR,
-	zhTW,
-	noNO,
-	ptBR,
-	ruRU,
-	esES,
-	plPL,
-	siLK,
+	'es-AR': esAR,
+	'it-IT': itIT,
+	'zh-CN': zhCN,
+	'fr-FR': frFR,
+	'zh-TW': zhTW,
+	'no-NO': noNO,
+	'pt-BR': ptBR,
+	'ru-RU': ruRU,
+	'es-ES': esES,
+	'pl-PL': plPL,
+	'si-LK': siLK,
+	'uk-UA': ukUA,
 	ps,
 }
 export default langs[globalThis.useLang] as typeof ja

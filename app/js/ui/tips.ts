@@ -101,10 +101,17 @@ export async function spotifyTips() {
 			},
 		})
 		const code = jsonRaw.token
+<<<<<<< HEAD
 		if( !code )  return toast({ html: 'Error Spotify Connection' })
 		localStorage.setItem('spotify-token', code)
 		const json = jsonRaw.data
 		if( !json )  return toast({ html: 'Error Spotify Connection' })
+=======
+		if (!code) return toast({ html: 'Error Spotify Connection' })
+		localStorage.setItem('spotify-token', code)
+		const json = jsonRaw.data
+		if (!json) return toast({ html: 'Error Spotify Connection' })
+>>>>>>> main
 		let ms = json.progress_ms
 		if (!ms) return tips('ver')
 		const last = 1000 - (ms % 1000)

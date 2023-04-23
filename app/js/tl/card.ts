@@ -13,17 +13,6 @@ export function additional(acctId: string, tlid: string) {
 
 	$('#timeline-container .mention').addClass('parsed')
 
-	$('#timeline-container .hashtag, #timeline-container [rel=tag]').each(function () {
-		const tags = $(this)
-			.attr('href')
-			?.match(/https?:\/\/([-a-zA-Z0-9@.]+)\/tags?\/([-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+)/)
-		const tagThis = tags ? tags[2] : $(this).attr('data-regTag')
-		if (tagThis) {
-			$(this).attr('href', '#')
-			$(this).attr('onclick', "tagShow('" + tagThis + "', this)")
-		}
-	})
-
 	//トゥートサムネ
 	$(`#timeline_${tlid} .toot a:not(.parsed)`).each(function () {
 		const text = $(this).attr('href')
@@ -169,9 +158,18 @@ export function cardCheck(tlid: number) {
 export function mov(id: string, tlid: string, type: string, rand: string, target: Element, acctId: string) {
 	const dropdownTrigger = `dropdown_${rand}`
 	let elm = document.querySelector(`#timeline_${tlid} #${dropdownTrigger}`)
+	let notfIndvColumn : string | undefined = undefined
 	if (tlid === 'notf') {
-		const timeline = $(target).parents('.notf-indv-box').attr('id')
-		elm = document.querySelector(`#${timeline} #${dropdownTrigger}`)
+		const timeline = $(target).parents('.notf-timeline').attr('tlid')
+		if (timeline) {
+			elm = document.querySelector(`#timeline_${timeline} #${dropdownTrigger}`)
+			tlid = timeline
+		} else {
+			const nTlId = $(target).parents('.notf-timeline').attr('id')
+			elm = document.querySelector(`#${nTlId} #${dropdownTrigger}`)
+			notfIndvColumn = nTlId
+		}
+		
 	}
 	if (elm) {
 		const instance = dropdownInitGetInstance(elm)
@@ -180,8 +178,8 @@ export function mov(id: string, tlid: string, type: string, rand: string, target
 
 	let click = false
 	let tlide = `[tlid=${tlid}]`
-	if (tlid === 'notf') {
-		tlide = `[data-notf=${acctId}]`
+	if (notfIndvColumn) {
+		tlide = `#${notfIndvColumn}`
 	} else if (tlid === 'user') {
 		tlide = '#his-data'
 	}

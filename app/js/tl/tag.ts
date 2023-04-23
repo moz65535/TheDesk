@@ -10,6 +10,7 @@ import $ from 'jquery'
 //よく使うタグ
 export const isTagData = (item: IColumnData): item is IColumnTag => typeof item !== 'string' && !item['acct']
 export function tagShow(tag: string, elm: HTMLElement) {
+	$('#tagContextMenu').addClass('keep')
 	tag = decodeURIComponent(tag)
 	const tagTL = lang.lang_parse_tagTL.replace('{{tag}}', '#' + tag)
 	const tagPin = lang.lang_parse_tagpin.replace('{{tag}}', '#' + tag)
@@ -24,16 +25,14 @@ export function tagShow(tag: string, elm: HTMLElement) {
 	$('#tagContextMenu').attr('data-tag', tag)
 	$('#tagContextMenu').attr('data-acct', acctId)
 	$('#tagContextMenu').removeClass('hide')
-	setTimeout(() => tShowBox('open'), 500)
+	setTimeout(() => $('#tagContextMenu').removeClass('keep'), 500)
 }
 export function tShowBox(mode: 'open' | 'close') {
 	if (mode === 'open') {
 		$('#tagContextMenu').removeClass('hide')
-	} else if (mode === 'close') {
+	} if (mode === 'close' && !$('#tagContextMenu').hasClass('keep')) {
 		if (!$('#tagContextMenu').hasClass('hide')) $('#tagContextMenu').addClass('hide')
 		$('#tagContextMenu').removeClass('keep')
-	} else {
-		$('#tagContextMenu').toggleClass('hide')
 	}
 }
 export function doTShowBox(type: 'tl' | 'toot' | 'pin' | 'f') {
@@ -70,6 +69,7 @@ function tagPin(tag: string) {
 export function tagRemove(key: number) {
 	const tags = localStorage.getItem('tag') || '[]'
 	const obj = JSON.parse(tags)
+<<<<<<< HEAD
 	let pt = localStorage.getItem('stable') || '[]'
 	let nowPT = JSON.parse(pt)
 	let str = $('#textarea').val() as string
@@ -82,6 +82,18 @@ export function tagRemove(key: number) {
 			characterCounterInit($('#textarea'))
 			nowPT.splice(nowPT.indexOf(obj[key]),1)
 			localStorage.setItem('stable',JSON.stringify(nowPT))
+=======
+	const pt = localStorage.getItem('stable') || '[]'
+	const nowPT = JSON.parse(pt)
+	let str = $('#textarea').val()?.toString() || ''
+	for (const PTag of nowPT) {
+		if (PTag === obj[key]) {
+			str = str.replace(new RegExp(`(\\s#${PTag}\\s)`, 'g'), ' ').replace(new RegExp(`(^#${PTag}\\s|\\s#${PTag}$|^#${PTag}$)`, 'g'), '')
+			$('#textarea').val(str)
+			characterCounterInit($('#textarea'))
+			nowPT.splice(nowPT.indexOf(obj[key]), 1)
+			localStorage.setItem('stable', JSON.stringify(nowPT))
+>>>>>>> main
 			toast({ html: PTag + ' ' + lang.lang_tags_unrealtime, displayLength: 3000 })
 			break
 		}
@@ -96,7 +108,11 @@ export function favTag() {
 	const tagArr = localStorage.getItem('tag') || '[]'
 	const obj = JSON.parse(tagArr)
 	let tags = ''
+<<<<<<< HEAD
 	const nowPT = JSON.parse(localStorage.getItem('stable')|| '[]')
+=======
+	const nowPT = JSON.parse(localStorage.getItem('stable') || '[]')
+>>>>>>> main
 	let key = 0
 	for (const tagRaw of obj) {
 		let ptt = lang.lang_tags_unrealtime
@@ -138,6 +154,7 @@ export function tagTL(a: IColumnType, b: string, d: string) {
 export function autoToot(tag: string) {
 	tag = escapeHTML(tag)
 	const nowPT = JSON.parse(localStorage.getItem('stable') || '[]')
+<<<<<<< HEAD
 	if ( nowPT.includes(tag) ) {
 		let str = $('#textarea').val() as string
 		do {
@@ -146,6 +163,14 @@ export function autoToot(tag: string) {
 		$('#textarea').val(str)
 		characterCounterInit($('#textarea'))
 		nowPT.splice(nowPT.indexOf(tag),1)
+=======
+	if (nowPT.includes(tag)) {
+		let str = $('#textarea').val()?.toString() || ''
+		str = str.replace(new RegExp(`(\\s#${tag}\\s)`, 'g'), ' ').replace(new RegExp(`(^#${tag}\\s|\\s#${tag}$|^#${tag}$)`, 'g'), '')
+		$('#textarea').val(str)
+		characterCounterInit($('#textarea'))
+		nowPT.splice(nowPT.indexOf(tag), 1)
+>>>>>>> main
 		localStorage.setItem('stable', JSON.stringify(nowPT))
 		toast({ html: tag + ' ' + lang.lang_tags_unrealtime, displayLength: 3000 })
 	} else {

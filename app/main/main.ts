@@ -15,7 +15,7 @@ import crypto from 'crypto'
 import { system as systemFunc } from './system'
 const { Menu, BrowserWindow, ipcMain } = electron
 import { join, dirname as getDirname } from 'path'
-
+console.log(`Your personal data is located on ${app.getPath('userData')}`)
 const info_path = join(app.getPath('userData'), 'window-size.json')
 const max_info_path = join(app.getPath('userData'), 'max-window-size.json')
 const ha_path = join(app.getPath('userData'), 'hardwareAcceleration')
@@ -49,7 +49,7 @@ if (!gotTheLock) {
 	app.on('second-instance', (event, commandLine) => {
 		if (!mainWindow) return
 		opening = false
-		const m = commandLine[2].match(/([a-zA-Z0-9]+)\/?\?[a-zA-Z-0-9]+=(.+)/)
+		const m = commandLine[2].match(/([a-zA-Z0-9]+)\/?\?[a-zA-Z-0-9]+=([^&]+)/)
 		if (m) {
 			mainWindow.webContents.send('customUrl', [m[1], m[2]])
 		}
@@ -64,7 +64,7 @@ app.on('window-all-closed', function () {
 app.on('open-url', function (event, url) {
 	if (!mainWindow) return
 	event.preventDefault()
-	const m = url.match(/([a-zA-Z0-9]+)\/?\?[a-zA-Z-0-9]+=(.+)/)
+	const m = url.match(/([a-zA-Z0-9]+)\/?\?[a-zA-Z-0-9]+=([^&]+)/)
 	if (m) {
 		mainWindow.webContents.send('customUrl', [m[1], m[2]])
 	}
@@ -150,16 +150,18 @@ function createWindow() {
 	}
 	let webviewEnabled = false
 	if (fs.existsSync(wv_path)) webviewEnabled = true
-	let window_size: IWindow = {
+	const initWindowSize: IWindow = {
 		width: 1000,
 		height: 750,
 		x: null,
 		y: null,
 		max: false
 	}
+	let windowSize: IWindow = initWindowSize
 	if (fs.existsSync(info_path)) {
-		const info = fs.readFileSync(info_path, 'utf8').toString() || '{}'
+		const info = fs.readFileSync(info_path, 'utf8').toString() || JSON.stringify(initWindowSize)
 		if (JSON.parse(info)) {
+<<<<<<< HEAD
 			window_size = JSON.parse(info)
 			if(window_size.width < 256 && window_size.height < 256){
 				window_size = {
@@ -169,6 +171,11 @@ function createWindow() {
 					y: null,
 					max: false
 				}
+=======
+			windowSize = JSON.parse(info)
+			if (windowSize.width < 256 || windowSize.height < 256) {
+				windowSize = initWindowSize
+>>>>>>> main
 			}
 		}
 	}
@@ -184,10 +191,6 @@ function createWindow() {
 			sandbox: false,
 			preload: join(homeDir, 'js', 'platform', 'preload.js'),
 		},
-		width: window_size.width || 1000,
-		height: window_size.height || 750,
-		x: window_size.x || undefined,
-		y: window_size.y || undefined,
 		show: false,
 	}
 	if (platform === 'linux') {
@@ -199,11 +202,17 @@ function createWindow() {
 		arg.simpleFullscreen = true
 	}
 	mainWindow = new BrowserWindow(arg)
+	mainWindow.setBounds({
+		width: windowSize.width,
+		height: windowSize.height,
+		x: windowSize.x || 1000,
+		y: windowSize.y || 750,
+	})
 	mainWindow.once('page-title-updated', () => {
 		if (!mainWindow) return
 		mainWindow.show()
 		console.log('Accessibility: ' + app.accessibilitySupportEnabled)
-		if (window_size.max) {
+		if (windowSize.max) {
 			mainWindow.maximize()
 		}
 	})
@@ -244,7 +253,7 @@ function createWindow() {
 		ua = 'Mastodon client: ' + crypto.randomBytes(N).toString('base64').substring(0, N)
 	}
 	mainWindow.loadURL(base + lang + '/index.html' + plus, { userAgent: ua })
-	if (!window_size.x && !window_size.y) {
+	if (!windowSize.x && !windowSize.y) {
 		mainWindow.center()
 	}
 	// ウィンドウが閉じられたらアプリも終了
@@ -282,26 +291,17 @@ function createWindow() {
 		mainWindow.close()
 	})
 	function writePos(mainWindow: electron.BrowserWindow) {
-		let size = {
-			width: mainWindow.getBounds().width,
-			height: mainWindow.getBounds().height,
-			x: mainWindow.getBounds().x,
-			y: mainWindow.getBounds().y,
-			max: false
-		}
-		if (
-			max_window_size.width === mainWindow.getBounds().width &&
-			max_window_size.height === mainWindow.getBounds().height &&
-			max_window_size.x === mainWindow.getBounds().x &&
-			max_window_size.y === mainWindow.getBounds().y
-		) {
-			size = {
-				width: mainWindow.getBounds().width,
-				height: mainWindow.getBounds().height,
-				x: mainWindow.getBounds().x,
-				y: mainWindow.getBounds().y,
-				max: true,
-			}
+		const {width, height, x, y} = mainWindow.getBounds()
+		const isMax = max_window_size.width === width &&
+			max_window_size.height === height &&
+			max_window_size.x === x &&
+			max_window_size.y === y
+		const size = {
+			width: width,
+			height: height,
+			x: x,
+			y: y,
+			max: isMax
 		}
 		fs.writeFileSync(info_path, JSON.stringify(size))
 	}

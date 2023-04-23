@@ -265,7 +265,7 @@ export function pwaImgSelect() {
 }
 export async function deleteImage(key: string) {
 	const result = await Swal.fire({
-		title: lang.lang_postimg_delete,
+		title: lang.lang_postimg_delConfirm,
 		icon: 'warning',
 		showCancelButton: true,
 		confirmButtonText: lang.lang_yesno,
@@ -311,7 +311,7 @@ export async function altImage(acctId: string, id: string) {
 			confirmButtonText: 'Post',
 			showLoaderOnConfirm: true,
 			preConfirm: async (data) => {
-				Swal.showLoading(null)
+				Swal.showLoading()
 				await api(start, {
 					method: 'put',
 					headers: {

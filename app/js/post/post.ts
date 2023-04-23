@@ -48,8 +48,8 @@ export async function post(postVis?: IVis, dry?: boolean, tagClear?: boolean ) {
 		ideKey = Math.floor(Date.now() / 1000) + '/TheDesk/' + user + '@' + domain
 		$('#ideKey').val(ideKey)
 	}
-	const cw_sent = localStorage.getItem('cw_sentence') || 500
-	const cw_ltres = localStorage.getItem('cw_letters') || 7000
+	const cw_sent = parseInt(localStorage.getItem('cw_sentence') || '500', 10) || 500
+	const cw_ltres = parseInt(localStorage.getItem('cw_letters') || '7000', 10) || 7000
 	if (!$('#cw').hasClass('cw-avail') && (str.length > cw_sent || str.split('\n').length - 1 > cw_ltres)) {
 		const plus = str.replace(/\n/g, '').slice(0, 10) + '...'
 		const result = await Swal.fire({
@@ -77,11 +77,17 @@ export async function post(postVis?: IVis, dry?: boolean, tagClear?: boolean ) {
 	if (editTarget) start = start + `/${editTarget}`
 	const reply = $('#reply').val()
 	const stable = JSON.parse(localStorage.getItem('stable') || '[]')
+<<<<<<< HEAD
 	for ( const tag of stable){
 		if ( tagClear ){
 			do {
 				str = str.replace(`#${tag}`,'')
 			} while( str.match(tag) )
+=======
+	for (const tag of stable){
+		if (tagClear){
+			str = str.replace(new RegExp(`(\\s#${tag}\\s)`, 'g'), ' ').replace(new RegExp(`(^#${tag}\\s|\\s#${tag}$|^#${tag}$)`, 'g'), '')
+>>>>>>> main
 		} else {
 			if (!str.match(tag)) str = `${str} #${tag}`
 		}
@@ -92,6 +98,7 @@ export async function post(postVis?: IVis, dry?: boolean, tagClear?: boolean ) {
 	if (reply) toot.in_reply_to_id = reply.toString()
 	const media = $('#media').val()?.toString()
 	if (media) toot.media_ids = media.split(',')
+	if (media && !str) return
 	const quote = $('#quote').val()?.toString()
 	if (quote) toot.quote_id = quote
 	if ($('#nsfw').hasClass('nsfw-avail')) toot.sensitive = true
@@ -194,11 +201,16 @@ export function clear(clearTags?: boolean) {
 	$('#textarea').val('')
 	$('#ideKey').val('')
 	const stable = JSON.parse(localStorage.getItem('stable') || '[]')
+<<<<<<< HEAD
 	if ( !clearTags && stable ) {
 		let tags = ''
 		for ( const tag of stable ){
 			tags = tags + '#' + tag + ' '
 		}
+=======
+	if (!clearTags && stable.length) {
+		const tags = `#${stable.join(' #')} `
+>>>>>>> main
 		$('#textarea').val(tags)
 	}
 	$('#textarea').attr('placeholder', lang.lang_toot)

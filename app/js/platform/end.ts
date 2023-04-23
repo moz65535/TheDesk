@@ -13,6 +13,7 @@ import { exportSettingsCore, importSettingsCore, fontList, ctLoad, clearCustomIm
 import { npCore } from '../ui/spotify'
 import { renderMem } from '../ui/tips'
 import { udg, udgEx } from '../userdata/showOnTL'
+import { tagShow } from '../tl/tag'
 declare let updateMess, updateProg
 //プラットフォーム別 最後に読むやつ
 //リンクを外部で開くか内部で出すか
@@ -31,7 +32,7 @@ $(document).on('click', 'a', (e) => {
 		//タグのURLぽかったら
 		const tags = url.match(/https:\/\/([^+_]+)\/tags\/([_a-zA-Z0-9&=+%]+)/)
 		//メンションっぽかったら
-		const ats = url.match(/https:\/\/([^+_]+)\/@([_a-zA-Z0-9&=+%]+)/)
+		const ats = url.match(/https:\/\/([^+_]+)\/@([_a-zA-Z0-9&=+%]+$)/)
 		if (toot) {
 			if (toot[1]) {
 				const acctId = $a.parent().attr('data-acct') || '0'
@@ -41,10 +42,11 @@ $(document).on('click', 'a', (e) => {
 		} else if (tags) {
 			if (tags[2]) {
 				const acctId = $a.parent().attr('data-acct') || '0'
-				tl('tag', decodeURI(tags[2]), acctId, 'add')
+				tagShow(decodeURI(tags[2]), e.target)
 			}
 		} else if (ats) {
 			if (ats[2]) {
+<<<<<<< HEAD
 				//おうどん判定
 				if ( ats[1] === 'audon.space/u' ){
 					postMessage(['openUrl', url], '*')
@@ -58,6 +60,10 @@ $(document).on('click', 'a', (e) => {
 						if (!globalThis.pwa) postMessage(['openUrl', url], '*')
 					}
 				}
+=======
+				const acctId = $a.parent().attr('data-acct') || localStorage.getItem('main')
+				udgEx(url, acctId)
+>>>>>>> main
 			}
 		} else {
 			if (globalThis.pwa) return

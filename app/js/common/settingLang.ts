@@ -15,25 +15,27 @@ import * as ruRU from '../../view/ru-RU/setting.vue'
 import * as esES from '../../view/es-ES/setting.vue'
 import * as plPL from '../../view/pl-PL/setting.vue'
 import * as siLK from '../../view/si-LK/setting.vue'
+import * as ukUA from '../../view/uk-UA/setting.vue'
 import * as ps from '../../view/ps/setting.vue'
 const langs = {
 	ja,
-	jaKS,
+	'ja-KS': jaKS,
 	en,
 	bg,
 	cs,
 	de,
-	esAR,
-	itIT,
-	zhCN,
-	frFR,
-	zhTW,
-	noNO,
-	ptBR,
-	ruRU,
-	esES,
-	plPL,
-	siLK,
+	'es-AR': esAR,
+	'it-IT': itIT,
+	'zh-CN': zhCN,
+	'fr-FR': frFR,
+	'zh-TW': zhTW,
+	'no-NO': noNO,
+	'pt-BR': ptBR,
+	'ru-RU': ruRU,
+	'es-ES': esES,
+	'pl-PL': plPL,
+	'si-LK': siLK,
+	'uk-UA': ukUA,
 	ps,
 }
 const imps = langs[globalThis.useLang]
